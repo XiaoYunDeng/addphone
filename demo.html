@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+ 
+ 
+<head>     
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />     
+<title>图片上传本地预览</title>     
+<style type="text/css">
+*{margin:0;padding:0;list-style: none;}
+.bug-add-wrap{width:1000px;height:100%;overflow: hidden;margin:0 auto;}
+#preview{width:640px;overflow:hidden;float: left;}
+#imghead {filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=image);}
+.newImg{width:140px;height:100px;display: inline-block;float:left;}
+.bug-add-left{float: left;line-height: 36px;font-size: 14px;color:#777;width:100px;}
+.bug-add-right{width: 880px;float: right;}
+#preview div{width:140px;height:100px;position: relative;float: left;margin-left:15px;margin-bottom:15px;}
+#preview span{display: block;background:red url("close.png") no-repeat;width:18px;height:18px;position: absolute;top:0;right:0;display: none;z-index:222;}
+.in-btn{position: absolute;top:0;left: 0;display: block;width:140px;height:100px;opacity:0;filter:alpha(opacity=0)}
+.bug-add-btn{position: relative;width:140px;height:100px;float: left;}
+</style>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+        var arr = [];
+        function previewImage(file){
+          var MAXWIDTH  = 260; 
+          var MAXHEIGHT = 180;
+          var div = document.getElementById('preview');
+          
+          if (file.files){
+            if(arr.indexOf(file.files[0].name)>=0){
+              alert("已选择过这张照片啦")
+            }else{
+              arr.push(file.files[0].name);
+              var div1 = document.createElement("div");
+              var span =  document.createElement("span");
+              var Imgs = document.createElement("img");
+              div1.appendChild(span);
+              div1.appendChild(Imgs);
+              Imgs.setAttribute("class", "newImg");
+              div.appendChild(div1);
+              var reader = new FileReader();
+              reader.onload = function(evt){Imgs.src = evt.target.result;}
+              reader.readAsDataURL(file.files[0]);
+            }
+          }else{
+            var sFilter='filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
+            file.select();
+            var src = document.selection.createRange().text;
+            arr.push(src);
+            console.log(arr.length);
+            var div1 = document.createElement("div");
+            var span =  document.createElement("span");
+            var imgs = document.createElement("img");
+            div1.appendChild(span);
+            imgs.style.width="140px";
+            imgs.style.height="100px";
+            imgs.style.display="inline-block";
+            imgs.style.background="red";
+            imgs.setAttribute("className", "newImg");
+            imgs.src = src;
+            div1.appendChild(imgs);
+            div.appendChild(div1);
+          }
+        }
+          
+       $(function(){
+          $(document).on('mouseover','#preview img',function(){
+              $("#preview span").show();
+          })
+          $(document).on('mouseout','#preview img',function(){
+              $("#preview span").hide();
+          })
+          $(document).on('click','#preview span',function(e){
+              var ev = e || window.event;
+              if (ev.stopPropagation) {
+                  ev.stopPropagation();
+              }
+              else if (window.event) {//IE
+                  window.event.cancelBubble = true;//IE
+              }
+            
+              $(this).parent().remove();
+          })
+        
+
+       })
+</script>     
+</head>     
+<body>
+<div class="bug-add-wrap">
+  <span class="bug-add-left">问题截图</span>
+  <div class="bug-add-right">
+    <div class="bug-add-btn"> 
+        <img src="add-img.png" alt="" />
+        <input type="file" onchange="previewImage(this)" class="in-btn"/>
+    </div>
+    <div id="preview">
+      
+    </div>
+  </div>
+
+        
+   
+</div>
+    
+</body>     
+</html>
